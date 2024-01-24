@@ -45,9 +45,8 @@ public class MyMainView extends VerticalLayout {
         loginForm.setSpacing(true);
 
         TextField username = new TextField("Usuario");
-        PasswordField password = new PasswordField("Contraseña");
 
-        Button loginButton = new Button("Iniciar sesión", e -> {
+        Button loginButton = new Button("Nombre de los jugadores", e -> {
             if (jugador == 1) {
                 nombreJugador1 = username.getValue();
                 elegirSimbolo(jugador);
@@ -59,7 +58,7 @@ public class MyMainView extends VerticalLayout {
         });
         loginButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
 
-        loginForm.add(username, password, loginButton);
+        loginForm.add(username, loginButton);
 
         return loginForm;
     }

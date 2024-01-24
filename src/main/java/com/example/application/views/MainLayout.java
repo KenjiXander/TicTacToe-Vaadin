@@ -2,6 +2,7 @@ package com.example.application.views;
 
 import com.example.application.views.game.GameView;
 import com.example.application.views.mymain.MyMainView;
+import com.example.application.views.stats.EstadisticasView;
 import com.vaadin.flow.component.applayout.AppLayout;
 import com.vaadin.flow.component.applayout.DrawerToggle;
 import com.vaadin.flow.component.html.Footer;
@@ -15,9 +16,7 @@ import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.theme.lumo.LumoUtility;
 import org.vaadin.lineawesome.LineAwesomeIcon;
 
-/**
- * The main view is a top-level placeholder for other views.
- */
+
 public class MainLayout extends AppLayout {
 
     private H2 viewTitle;
@@ -53,9 +52,11 @@ public class MainLayout extends AppLayout {
 
         nav.addItem(new SideNavItem("Elegir ficha", MyMainView.class, LineAwesomeIcon.AIRBNB.create()));
         nav.addItem(new SideNavItem("Tres en raya", GameView.class, LineAwesomeIcon.ANDROID.create()));
+        nav.addItem(new SideNavItem("Estadísticas", EstadisticasView.class, LineAwesomeIcon.CHART_BAR.create())); // Agregar esta línea
 
         return nav;
     }
+
 
     private Footer createFooter() {
         Footer layout = new Footer();

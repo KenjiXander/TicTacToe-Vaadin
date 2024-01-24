@@ -3,7 +3,7 @@ package com.example.application;
 public class TicTacToeGame {
 
     private final String ESPACIO_VACIO = " ";
-    private String jugadorActual = "X";
+    private String jugadorActual = "O";
     private String[][] tablero = {
             {ESPACIO_VACIO, ESPACIO_VACIO, ESPACIO_VACIO},
             {ESPACIO_VACIO, ESPACIO_VACIO, ESPACIO_VACIO},
@@ -20,8 +20,9 @@ public class TicTacToeGame {
     // Nuevo método para establecer el símbolo del jugador inicial
     public void setSimboloJugadorPrincipio(String simbolo) {
         simboloJugadorPrincipio = simbolo;
-        jugadorActual = simbolo;  // Establece el primer jugador como el jugador inicial
+        jugadorActual = simbolo; // Establece el primer jugador como el jugador inicial
     }
+
 
     public void hacerMovimiento(int fila, int colum) {
         // Verificar si la celda está vacía

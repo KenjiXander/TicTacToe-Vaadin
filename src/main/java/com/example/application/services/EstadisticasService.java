@@ -1,15 +1,28 @@
 package com.example.application.services;
 
-import com.example.application.EstadisticasJugador;
+import com.example.application.models.EstadisticasJugador;
+import com.example.application.repositories.EstadisticasJugadorRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.List;
 
+@Service
 public class EstadisticasService {
-    private static final Map<String, EstadisticasJugador> estadisticas = new HashMap<>();
 
-    public static void actualizarEstadisticas(String nombreJugador, boolean esGanador, boolean esEmpate) {
-        EstadisticasJugador jugador = estadisticas.getOrDefault(nombreJugador, new EstadisticasJugador(nombreJugador, 0, 0, 0, 0));
+    private final EstadisticasJugadorRepository estadisticasJugadorRepository;
+
+    @Autowired
+    public EstadisticasService(EstadisticasJugadorRepository estadisticasJugadorRepository) {
+        this.estadisticasJugadorRepository = estadisticasJugadorRepository;
+    }
+
+    public void actualizarEstadisticas(String nombreJugador, boolean esGanador, boolean esEmpate) {
+        EstadisticasJugador jugador = estadisticasJugadorRepository.findByNombreUsuario(nombreJugador);
+        if (jugador == null) {
+            jugador = new EstadisticasJugador(nombreJugador, 0, 0, 0, 0);
+        }
+
         jugador.setPartidasJugadas(jugador.getPartidasJugadas() + 1);
         if (esGanador) {
             jugador.setPartidasGanadas(jugador.getPartidasGanadas() + 1);
@@ -18,10 +31,11 @@ public class EstadisticasService {
         } else {
             jugador.setPartidasPerdidas(jugador.getPartidasPerdidas() + 1);
         }
-        estadisticas.put(nombreJugador, jugador);
+
+        estadisticasJugadorRepository.save(jugador);
     }
 
-    public static Map<String, EstadisticasJugador> obtenerEstadisticas() {
-        return estadisticas;
+    public List<EstadisticasJugador> obtenerTodasLasEstadisticas() {
+        return estadisticasJugadorRepository.findAll();
     }
 }

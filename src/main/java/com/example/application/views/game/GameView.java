@@ -12,6 +12,7 @@ import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.router.*;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Optional;
 
@@ -35,6 +36,8 @@ public class GameView extends VerticalLayout implements BeforeEnterObserver {
     private String nombreJugador1;
     private String nombreJugador2;
 
+    @Autowired
+    private EstadisticasService estadisticasService;
 
     @Override
     public void beforeEnter(BeforeEnterEvent event) {
@@ -55,13 +58,12 @@ public class GameView extends VerticalLayout implements BeforeEnterObserver {
                 nombreJugadorO = nombreJugador1;
             }
 
-            ticTacToe.setSimboloJugadorPrincipio(simboloJugadorPrincipio); // Asegúrate de que esta línea realmente establece el símbolo inicial en la lógica del juego
+            ticTacToe.setSimboloJugadorPrincipio(simboloJugadorPrincipio);
         }
 
         mostrarTablero();
         estructuraJuego();
     }
-
 
     private void mostrarTablero() {
         VerticalLayout disenoVertical = new VerticalLayout();
@@ -79,11 +81,6 @@ public class GameView extends VerticalLayout implements BeforeEnterObserver {
             disenoVertical.add(botonFila);
         }
 
-        Button botonVerEstadisticas = new Button("Ver Estadísticas");
-        botonVerEstadisticas.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
-        botonVerEstadisticas.addClickListener(e -> getUI().ifPresent(ui -> ui.navigate("estadisticas")));
-
-
         add(crearBotonRegreso());
         add(disenoVertical);
         add(textoGanador);
@@ -91,21 +88,6 @@ public class GameView extends VerticalLayout implements BeforeEnterObserver {
         add(ganaXTexto);
         add(ganaOTexto);
         add(reiniciarVictoriasBoton());
-    }
-
-    private Button reiniciarVictoriasBoton() {
-        Button reiniciarVictoriasBoton = new Button("Reiniciar Victorias");
-        reiniciarVictoriasBoton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
-        reiniciarVictoriasBoton.addClickListener(e -> reiniciarVictorias());
-        return reiniciarVictoriasBoton;
-    }
-
-
-    private void reiniciarVictorias() {
-        ganaX = 0;
-        ganaO = 0;
-        ganaXTexto.setValue("");
-        ganaOTexto.setValue("");
     }
 
     private Button crearBotonTablero(int fila, int colum) {
@@ -144,26 +126,26 @@ public class GameView extends VerticalLayout implements BeforeEnterObserver {
     }
 
     private void mostrarGanador(String simboloGanador) {
-        String nombreGanador = simboloGanador.equals("X") ? nombreJugadorO : nombreJugadorX;
+        String nombreGanador = simboloGanador.equals("X") ? nombreJugadorX : nombreJugadorO;
         textoGanador.setValue("Ganador: " + nombreGanador + " (" + simboloGanador + ")");
-        EstadisticasService.actualizarEstadisticas(nombreGanador, true, false);
+        estadisticasService.actualizarEstadisticas(nombreGanador, true, false);
         desactivarBotonesTablero();
     }
 
     private void contadorVictorias(String simboloGanador) {
         if (simboloGanador.equals("X")) {
             ganaX++;
-            ganaXTexto.setValue("Victorias " + nombreJugadorO + ": " + ganaX);
+            ganaXTexto.setValue("Victorias " + nombreJugadorX + ": " + ganaX);
         } else if (simboloGanador.equals("O")) {
             ganaO++;
-            ganaOTexto.setValue("Victorias " + nombreJugadorX + ": " + ganaO);
+            ganaOTexto.setValue("Victorias " + nombreJugadorO + ": " + ganaO);
         }
     }
 
     private void empate() {
         textoGanador.setValue("Empate");
-        EstadisticasService.actualizarEstadisticas(nombreJugadorX, false, true);
-        EstadisticasService.actualizarEstadisticas(nombreJugadorO, false, true);
+        estadisticasService.actualizarEstadisticas(nombreJugadorX, false, true);
+        estadisticasService.actualizarEstadisticas(nombreJugadorO, false, true);
         desactivarBotonesTablero();
     }
 
@@ -214,12 +196,24 @@ public class GameView extends VerticalLayout implements BeforeEnterObserver {
         textoGanador.setValue("");
     }
 
+    private Button reiniciarVictoriasBoton() {
+        Button reiniciarVictoriasBoton = new Button("Reiniciar Victorias");
+        reiniciarVictoriasBoton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
+        reiniciarVictoriasBoton.addClickListener(e -> reiniciarVictorias());
+        return reiniciarVictoriasBoton;
+    }
+
+    private void reiniciarVictorias() {
+        ganaX = 0;
+        ganaO = 0;
+        ganaXTexto.setValue("Victorias X: 0");
+        ganaOTexto.setValue("Victorias O: 0");
+    }
+
+
     private Button crearBotonRegreso() {
         Button botonRegreso = new Button("Regresar a escoger jugador");
         botonRegreso.addClickListener(e -> getUI().ifPresent(ui -> ui.navigate(MyMainView.class)));
         return botonRegreso;
     }
-
-
-
 }

@@ -1,6 +1,8 @@
 package com.example.application.views.stats;
 
-import com.example.application.EstadisticasJugador;
+import com.example.application.models.EstadisticasJugador;
+import com.example.application.services.EstadisticasService;
+import org.springframework.beans.factory.annotation.Autowired;
 import com.example.application.services.EstadisticasService;
 import com.example.application.views.MainLayout;
 import com.vaadin.flow.component.button.Button;
@@ -13,6 +15,9 @@ import com.vaadin.flow.router.Route;
 @Route(value = "estadisticas", layout = MainLayout.class)
 @PageTitle("Estadísticas")
 public class EstadisticasView extends VerticalLayout {
+
+    @Autowired
+    private EstadisticasService estadisticasService;
 
     private Grid<EstadisticasJugador> grid = new Grid<>(EstadisticasJugador.class);
 
@@ -35,6 +40,6 @@ public class EstadisticasView extends VerticalLayout {
     }
 
     private void actualizarLista() {
-        grid.setItems(EstadisticasService.obtenerEstadisticas().values());
+        grid.setItems(estadisticasService.obtenerTodasLasEstadisticas());
     }
 }
